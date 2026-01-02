@@ -1,0 +1,195 @@
+========================================
+FAST-Calib Docker 镜像导入说明
+========================================
+
+本文件包含如何在新设备上导入和使用 FAST-Calib Docker 镜像的说明。
+
+## 文件清单
+
+1. fast-calib-docker-image.tar.gz - Docker 镜像压缩包
+2. docker-compose-ready.yml - 配置好的 docker-compose 文件
+3. import-docker-image.sh - 自动导入脚本
+4. import-instructions.txt - 本说明文件
+
+## 系统要求
+
+- Docker (版本 20.10+)
+- Docker Compose (版本 1.29+)
+- 磁盘空间: 至少 10GB 可用空间
+- 操作系统: Linux (推荐 Ubuntu 20.04/22.04)
+
+## 快速开始
+
+### 方法 1: 使用自动导入脚本（推荐）
+
+```bash
+# 1. 解压所有文件到目标目录
+tar -xzf fast-calib-package.tar.gz
+cd fast-calib-package
+
+# 2. 运行导入脚本
+chmod +x import-docker-image.sh
+./import-docker-image.sh
+
+# 3. 启动容器
+docker-compose -f docker-compose-ready.yml up -d
+
+# 4. 进入容器
+docker-compose -f docker-compose-ready.yml exec fast-calib /bin/bash
+```
+
+### 方法 2: 手动导入
+
+```bash
+# 1. 解压镜像文件
+gunzip fast-calib-docker-image.tar.gz
+
+# 2. 导入镜像
+docker load -i fast-calib-docker-image.tar
+
+# 3. 验证导入
+docker images | grep fast-calib-ready
+
+# 4. 启动容器
+docker-compose -f docker-compose-ready.yml up -d
+
+# 5. 进入容器
+docker-compose -f docker-compose-ready.yml exec fast-calib /bin/bash
+```
+
+## 使用说明
+
+进入容器后，环境已经完全配置好，可以直接使用：
+
+```bash
+# 检查 ROS 环境
+source ~/.bashrc
+roscd fast_calib
+
+# 运行单场景标定
+roslaunch fast_calib calib.launch
+
+# 运行多场景标定
+roslaunch fast_calib multi_calib.launch
+```
+
+## 数据管理
+
+### 放置标定数据
+
+将你的标定数据（.bag 和图片）放在主机的某个目录，然后挂载到容器：
+
+修改 docker-compose-ready.yml，取消注释以下行：
+
+```yaml
+volumes:
+  - ./calib_data:/root/catkin_ws/src/fast_calib/calib_data:rw
+  - ./output:/root/catkin_ws/src/fast_calib/output:rw
+```
+
+### 查看结果
+
+标定结果会保存在容器的 /root/catkin_ws/src/fast_calib/output/ 目录。
+如果配置了 volume 挂载，结果会自动同步到主机。
+
+## GUI 支持（X11 转发）
+
+如果需要使用 RViz 等图形界面：
+
+### Linux 主机
+
+```bash
+# 允许 Docker 访问 X server
+xhost +local:docker
+
+# 设置 DISPLAY 环境变量
+export DISPLAY=:0
+
+# 启动容器（docker-compose-ready.yml 已配置 X11）
+docker-compose -f docker-compose-ready.yml up -d
+```
+
+### Windows/Mac 主机
+
+需要安装 X Server：
+- Windows: VcXsrv 或 Xming
+- Mac: XQuartz
+
+配置后设置 DISPLAY 变量为主机 IP。
+
+## 网络配置
+
+容器使用 host 网络模式，ROS 节点可以直接与主机通信。
+
+## 故障排查
+
+### 镜像导入失败
+
+```bash
+# 检查文件完整性
+md5sum fast-calib-docker-image.tar.gz
+
+# 检查磁盘空间
+df -h
+
+# 清理旧镜像释放空间
+docker system prune -a
+```
+
+### 容器启动失败
+
+```bash
+# 查看日志
+docker-compose -f docker-compose-ready.yml logs
+
+# 检查是否有端口冲突
+netstat -tulpn | grep <port>
+```
+
+### GUI 不显示
+
+```bash
+# 检查 DISPLAY 变量
+echo $DISPLAY
+
+# 允许 X 连接
+xhost +local:docker
+
+# 测试 X11
+docker exec fast-calib xclock
+```
+
+## 更新和维护
+
+### 更新项目代码
+
+如果项目代码有更新：
+
+```bash
+# 进入容器
+docker exec -it fast-calib /bin/bash
+
+# 更新代码
+cd /root/catkin_ws/src/fast_calib
+git pull
+
+# 重新编译
+cd /root/catkin_ws
+catkin_make
+```
+
+### 备份容器状态
+
+如果做了重要修改，可以再次导出镜像：
+
+```bash
+docker commit fast-calib fast-calib-ready:v1.1
+docker save -o fast-calib-v1.1.tar fast-calib-ready:v1.1
+gzip fast-calib-v1.1.tar
+```
+
+## 技术支持
+
+如有问题，请查看项目文档或提交 issue。
+
+========================================

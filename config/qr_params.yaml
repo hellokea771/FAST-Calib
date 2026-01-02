@@ -36,18 +36,18 @@
   # p1: -0.000731746350601389
   # p2: -0.000201478932371979
 
-  # multi-scene
-  fx: 2478.48702288166
-  fy: 2478.58544825456
-  cx: 1230.99707596681
-  cy: 1025.66149498072
-  k1: -0.0493178189623200
-  k2: 0.147394487986097
-  p1: -0.00127118592043482
-  p2: -0.00200379689523022
-  # Fisheye (k1, k2, k3, k4) - 如果使用鱼眼模型，请填写这些值
-  k3: 0.0
-  k4: 0.0
+     
+# Camera intrinsics (最佳版本)
+  fx: 13813.0
+  fy: 13828.0
+  cx: 743.7853
+  cy: 566.2776
+  k1: 0.3616
+  k2: -72.9581
+  p1: -0.00089822 
+  p2: 0.00036205
+
+  
   
 
 # Calibration target parameters
@@ -56,42 +56,20 @@
   delta_height_qr_center: 0.35 # Half the distance between the centers of two markers in the vertical direction
   delta_width_circles: 0.5 # Distance between the centers of two circles in the horizontal direction
   delta_height_circles: 0.4 # Distance between the centers of two circles in the vertical direction
-  circle_radius: 0.12 # Radius of the circle 
+  circle_radius: 0.12 # Radius of the circle
 
-# Distance filter
-  # x_min: 3.0 # avia and mid360: 2.0 ouster: 1.5
-  # x_max: 5.0
-  # y_min: -0.5
-  # y_max: 3.0
-  # z_min: 0.0 # avia and mid360: -0.5 ouster: -0.8
-  # z_max: 2.0
-
-# multi_scene_11
-  # x_min: 2.0
-  # x_max: 5.0
-  # y_min: -1.0
-  # y_max: 1.0
-  # z_min: 0.0
-  # z_max: 2.0
-# multi_scene_22
-  # x_min: 2.0
-  # x_max: 5.0
-  # y_min: -4.0
-  # y_max: 1.0
-  # z_min: 0.0
-  # z_max: 2.0
-# multi_scene_33
-  x_min: 2.0
-  x_max: 5.0
-  y_min: -1.0
-  y_max: 4.0
-  z_min: 0.0
-  z_max: 2.0
+# Distance filter - 根据场景的实际情况调整
+  x_min: 17.0
+  x_max: 17.5
+  y_min: -0.9
+  y_max: 0.9
+  z_min: -0.4
+  z_max: 1.0
 
 # Input
   lidar_topic: "/livox/lidar" # /ouster/points /livox/lidar
-  bag_path: "$(find fast_calib)/calib_data/avia_multi_scene/33.bag"
-  image_path: "$(find fast_calib)/calib_data/avia_multi_scene/33.jpg"
+  bag_path: "$(find fast_calib)/calib_data/data/clean.bag"
+  image_path: "$(find fast_calib)/calib_data/data/legacy_4.png"
 
 # Output
   output_path: "$(find fast_calib)/output"
