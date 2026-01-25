@@ -141,14 +141,14 @@ public:
         pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_estimator;
         pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
         normal_estimator.setInputCloud(aligned_cloud_);
-        normal_estimator.setRadiusSearch(0.03); // 设置法线估计的搜索半径
+        normal_estimator.setRadiusSearch(0.05); // 设置法线估计的搜索半径
         normal_estimator.compute(*normals);
     
         pcl::PointCloud<pcl::Boundary> boundaries;
         pcl::BoundaryEstimation<pcl::PointXYZ, pcl::Normal, pcl::Boundary> boundary_estimator;
         boundary_estimator.setInputCloud(aligned_cloud_);
         boundary_estimator.setInputNormals(normals);
-        boundary_estimator.setRadiusSearch(0.03); // 设置边界检测的搜索半径
+        boundary_estimator.setRadiusSearch(0.05); // 设置边界检测的搜索半径
         boundary_estimator.setAngleThreshold(M_PI / 4); // 设置角度阈值
         boundary_estimator.compute(boundaries);
     
@@ -165,9 +165,9 @@ public:
     
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-        ec.setClusterTolerance(0.02); // 设置聚类距离阈值
-        ec.setMinClusterSize(50);     // 最小点数
-        ec.setMaxClusterSize(1000);   // 最大点数
+        ec.setClusterTolerance(0.03); // 设置聚类距离阈值
+        ec.setMinClusterSize(20);     // 最小点数
+        ec.setMaxClusterSize(5000);   // 最大点数
         ec.setSearchMethod(tree);
         ec.setInputCloud(edge_cloud_);
         ec.extract(cluster_indices);
@@ -213,7 +213,7 @@ public:
                 ROS_INFO("error=%f", error);
     
                 // 如果拟合误差较小，则认为是一个圆洞
-                if (error < 0.05) 
+                if (error < 0.04) 
                 {
                     // 将恢复后的圆心坐标添加到点云中
                     pcl::PointXYZ center_point;
@@ -234,6 +234,14 @@ public:
                 }
             }
         }
+        ROS_INFO("Detected %ld lidar circle centers.", center_cloud->size());
+for (size_t i = 0; i < center_cloud->size(); ++i) {
+  ROS_INFO("  center[%ld] = (%.3f, %.3f, %.3f)",
+           i,
+           center_cloud->points[i].x,
+           center_cloud->points[i].y,
+           center_cloud->points[i].z);
+}
     }
 
     // 获取中间结果的点云
