@@ -213,7 +213,7 @@ public:
                 ROS_INFO("error=%f", error);
     
                 // 如果拟合误差较小，则认为是一个圆洞
-                if (error < 0.04) 
+                if (error < 0.05) 
                 {
                     // 将恢复后的圆心坐标添加到点云中
                     pcl::PointXYZ center_point;

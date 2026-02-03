@@ -128,4 +128,7 @@ rosbag record /livox/lidar /camera/image_color -O calib_data/my_calib.bag
     *   A: 检查 `Distance Filter` 的范围是否正确包围了标定板，且没有包含过多的背景墙面。
 *   **Q: 图像加载失败？**
     *   A: 检查 `image_path` 路径是否正确，确保是绝对路径或使用了 `$(find fast_calib)` 前缀。
-
+*   **Q: rviz打不开**
+    *   输入
+    roscore &
+    这时候再打开

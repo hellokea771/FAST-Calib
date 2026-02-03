@@ -7,8 +7,8 @@
 
 # Camera intrinsics  
   # mid360
-  # fx: 843.501050605967
-  # fy: 845.199690011973
+  # fx: 875.2755278883537
+  # fy: 891.3045708206549
   # cx: 321.017429415352
   # cy: 239.294896816737
   # k1: -0.465219389887045
@@ -38,14 +38,14 @@
 
      
 # Camera intrinsics (最佳版本)
-  fx: 13813.0
-  fy: 13828.0
-  cx: 743.7853
-  cy: 566.2776
-  k1: 0.3616
-  k2: -72.9581
-  p1: -0.00089822 
-  p2: 0.00036205
+  fx: 875.2755278883537
+  fy: 891.3045708206549
+  cx: 627.6906481468412
+  cy: 919.0537500449557
+  k1: -0.013429006611093
+  k2: -0.001486947546463
+  p1: 0.00
+  p2: 0.00
 
   
   
@@ -59,17 +59,17 @@
   circle_radius: 0.12 # Radius of the circle
 
 # Distance filter - 根据场景的实际情况调整
-  x_min: 17.0
-  x_max: 17.5
-  y_min: -0.9
-  y_max: 0.9
-  z_min: -0.4
-  z_max: 1.0
+  x_min: 12.9
+  x_max: 13.6
+  y_min: -0.3
+  y_max: 1.6
+  z_min: -0.6
+  z_max: 0.9
 
 # Input
   lidar_topic: "/livox/lidar" # /ouster/points /livox/lidar
-  bag_path: "$(find fast_calib)/calib_data/data/clean.bag"
-  image_path: "$(find fast_calib)/calib_data/data/legacy_4.png"
+  bag_path: "$(find fast_calib)/calib_data/data/biaoding.bag"
+  image_path: "$(find fast_calib)/calib_data/data/biaoding_1.png"
 
 # Output
   output_path: "$(find fast_calib)/output"
